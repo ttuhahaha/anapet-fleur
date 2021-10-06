@@ -1,5 +1,4 @@
 function drawstamen() {
-  console.log (stamens)
   //create new stamens
   if (stamens.length == 0 && maxstamen > 0) {
     stamens = Array(4)
@@ -14,7 +13,7 @@ function drawstamen() {
       stroke(stamen.color);
       strokeWeight(by/12);
       for (let i = 0; i < LL.R/2; i++) {
-        line(stamen.pos.x, stamen.pos.y, stamen.pos.x + (nz()-0.5)*LL.R/20, stamen.pos.y + (nz()-0.5)*LL.R/20) 
+        line(stamen.pos.x, stamen.pos.y, stamen.pos.x + (nz()-0.5)*LL.R/7, stamen.pos.y + (nz()-0.5)*LL.R/7) 
        }
       pop();
       if (stamnum < maxstamen) {
@@ -23,51 +22,60 @@ function drawstamen() {
       }
     } else {
       //draw//
-      stamen.color.setAlpha(stamen.LS);
+      stamen.color = color(stamen.hu+stamen.LS, 100, 50, stamen.LS);
 //      strokeWeight(bx/8);
       stamen.velocity.add(stamen.acceleration);
-      stamen.velocity.setMag(LL.R/90);
-      if (TYPE == 4) stamen.velocity.setMag (height/70)
-      if (TYPE == 4 && stamen.LS<0.3) stamen.color.setAlpha(0)
+ //     console.log(stamens)
+      stamen.velocity.setMag(LL.R/90*LL.thome);
+      if (TYPE == 4) {stamen.velocity.mult (10.5), stamen.LS +=0.002}
+//      if (TYPE == 4 && stamen.LS<0.1) stamen.color.setAlpha(0)
       stamen.pos.add(stamen.velocity);
-      stamen.LS += 0.01;
+      stamen.LS += 0.005;
       stroke(stamen.color);
       strokeWeight(by/5);
-      // line(
-      //   stamen.prevpos.x,
-      //   stamen.prevpos.y,
-      //   stamen.pos.x,
-      //   stamen.pos.y
-      // );
-      point(stamen.pos.x, stamen.pos.y)
+      line(
+        stamen.prevpos.x,
+        stamen.prevpos.y,
+        stamen.pos.x,
+        stamen.pos.y
+      );
+    //   point(stamen.pos.x, stamen.pos.y)
       stamen.prevpos = stamen.pos.copy();
 //      console.log(stamen.LS)
     }
   }
   stamens = stamens.filter((p) => frameCount % 100 !== p.offset); //remove dead
-  if (stamens.length == 0) return true; //done drawing
+  if (stamens.length == 0) return frameCount; //done drawing
 }
 
 class Stamen {
   constructor() {
     this.pos = createVector(home.x - (nz() - 0.5)*LL.R/2, home.y - (nz()-0.5)*LL.R/2);
-    this.acceleration = createVector(0, 0.00015 * LL.R); //gravity
+    this.acceleration = createVector(0, 0.001 * bx); //gravity
     this.velocity = p5.Vector.sub(this.pos, home);
     this.velocity.setMag(bx);
     let h = home.copy();
     h.setMag(bx);
     h.mult(LL.thome);
     this.velocity.add(h);
-    this.LS = -0.1;
-    this.color = color(((hu + 160) % 360) + nz() * 40, 100, 50, 1);
-    this.prevpos = this.pos.copy();
+    this.LS = -0.01;
+    this.hu = ((hu + 160) % 360) + nz() * 60;
+    this.color = color(this.hu, 100, 50, 1);
     this.offset = (frameCount + floor(map(nz(), 0.3, 1, 40, 99))) % 100; //randomness of length
     if (this.offset == 0) this.offset = 50;
-    if (TYPE == 4) {
-
-      this.LS = -0.5;
-      this.acceleration.mult(20)}
-    //    this.velocity.mult (50);}
+    if (TYPE == 4) {//position inside of p3???
+      let vec = home.copy();
+      vec.mult(LL.thome*0.4)
+      vec.y *=0.5;
+    //  ellipse (vec.x, vec.y, LL.R);
+    //  this.pos = createVector((nz() - 0.5)*width/2, (nz()-0.5)*height/2-50*by);
+      this.pos = createVector((nz() - 0.5)*LL.R*2+vec.x, (nz()-0.5)*LL.R+vec.y);
+      this.LS =-0.2
+      this.velocity = this.pos.copy();
+      this.velocity.mult(0.5)
+      this.acceleration.mult(40);
+    }
+    this.prevpos = this.pos.copy();
   }
 }
 
@@ -96,6 +104,7 @@ fill(stamen.color)
       if (stamnum < maxstamen) {
         stamens.push(new Stamen1());
         stamnum++;
+        console.log(stamnum)
       }
       pop()
     }

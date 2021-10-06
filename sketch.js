@@ -41,8 +41,10 @@ let LSadd = 1; //speed of gradient
 let LL;
 let center = false;
 let TYPE;
+let st;
 
 function setup() {
+  strokeCap(SQUARE)
   colorMode(HSL);
   hu = random(360);
   createCanvas(windowHeight * 1.5, windowHeight);
@@ -59,7 +61,10 @@ function setup() {
 
 function draw() {
   //draw shades
-  if (TYPE != 4) drawbg(200 * Q);
+  if (TYPE != 4)
+    drawbg(200 * Q);
+  //if (frameCount % 20 == 0) 
+  glare();
 
   push();
   translate(translation[0] * bx, translation[1] * by);
@@ -68,19 +73,16 @@ function draw() {
 
   //draw flower
   if (layers[flID] != null) drawflower(layers[flID]);
-  if (particles.length == 0 && petalcount == 0) {
-    flID++;
-    startframe = frameCount
-  }
 
   //draw stamen
-  if (layers[flID] == null && a != true) 
-  a = drawstamen();
+  if (
+    layers[flID] == null &&
+    st == null)
+    st = drawstamen();
   pop();
 
   //draw signature//!!no stamen?
-  if (layers[flID] == null && a == true) {
-    startframe = frameCount;
-    signature(startframe);
+  if (layers[flID] == null && st != null) {
+    signature();
   }
 }
