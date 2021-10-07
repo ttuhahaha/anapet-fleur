@@ -1,12 +1,12 @@
 let counter = 0;
-
 function drawbg(step) {
+
   if (counter <= step) {
     if (frameCount % (Q * 5) == 0) {
       push();
       translate(width / 2, height / 2);
       rotate(noise(1) * 5);
-      stroke(noise(frameCount / 500) * 1.7 * hu, 100, 50, 0.002);
+      stroke((noise(frameCount/500) * hu + 100) % 360, 100, 50, 0.001);
       if (nz() > 0.7) stroke(0, 0, 0, 0.02);
       strokeWeight(nz()*bx*5);
       line(

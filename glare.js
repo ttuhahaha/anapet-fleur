@@ -1,40 +1,43 @@
 let glares = [];
+
 function glare() {
-//    let glare = new Glare();
-if (frameCount % 5 == 0)    
-glares.push( new Glare()); 
-    glares.forEach (p => p.draw())
-//if (glares.length > 100) glares.splice(0,1)
+    if (frameCount % (50 * Q) == 0) {
+        let glare = new(Glare);
+        glare.draw2();
     }
-    
-    class Glare {
-        constructor () {
-            this.pos = createVector((100 - translation[0]) * bx * nz()*5, (100 - translation[1]) * by * nz()*5);
-    //        this.size = nz() * bx * 10;
-            this.color = color(hu, 100,100,0.01)
-    //        this.prevpos = this.pos.copy()
-        }
 
-        draw () {
-            stroke(this.color);
-            line (this.pos.x, this.pos.y, this.pos.x+(nz()-0.5)*bx*5, this.pos.y+(nz()-0.5)*by*5);
-        }
+    //    if (frameCount % 10 == 0) glares.forEach(p => p.draw1())
+}
 
-        draw1() {
-            //fill(this.color);
-            //noStroke();
-            stroke(this.color)
-            strokeWeight(5)
-            noFill()
-            ellipse(this.pos[0]+(frameCount%100)*10, this.pos[1], this.size*nz());
-        }
-        draw2() {
-            stroke(this.color)
-            this.pos.y -=15;
-            this.pos.x = this.pos.x + cos(this.pos.y)*50;
-            line(this.prevpos.x, this.prevpos.y, this.pos.x, this.pos.y)
-
-
-            this.prevpos = this.pos.copy()
-        }
+class Glare {
+    constructor() {
+        this.posx = width * nz() + noise(hu);
+        this.posy = height * nz() + noise(sw);
+        this.color = color(nz(1)*hu, 100, 50, 0.05);
+        this.radius = nz() * 50
     }
+    draw() {
+        stroke(this.color);
+        line(this.posx, this.posy, this.posx + nz(1) * bx * 5, this.posy + nz(1) * by * 5);
+    }
+    draw1() {
+        push()
+        stroke(this.color)
+        strokeWeight(nz() * 70)
+        point(this.posx, this.posy)
+        pop()
+    }
+    draw2() {
+        push()
+        noStroke()
+        fill(this.color)
+        beginShape();
+        for (let a = 0; a < TWO_PI; a += PI / 3) {
+            let sx = cos(a) * this.radius + this.posx;
+            let sy = sin(a) * this.radius + this.posy;
+            vertex(sx, sy);
+        }
+        endShape(CLOSE);
+        pop()
+    }
+}
