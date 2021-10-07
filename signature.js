@@ -6,9 +6,6 @@ let prevposy = a[1];
 let ltr = a;  
 
 function signature(start) {
-  console.log("signature")
-console.log(frameCount);
-console.log(start)  
   push();
   translate(100 * bx, 100 * by);
   if (frameCount == start) ltr = a;
@@ -17,7 +14,7 @@ console.log(start)
   if (frameCount == start + 89) noLoop();
   letter(ltr, start);
   strokeWeight(2);
-  stroke(10);
+  stroke(20);
   line(prevposx, prevposy, thisposx, thisposy);
   prevposx = thisposx;
   prevposy = thisposy;

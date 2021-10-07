@@ -1,5 +1,3 @@
-//"0x11ac128f8b54949c12d04102cfc01960fc496813cbc3495bf77aeed738579738"
-
 function randomHash() {
   let x = "0123456789abcdef",
     hash = "0x";
@@ -11,199 +9,100 @@ function randomHash() {
 
 tokenData = {
   hash: randomHash(),
-//    hash: "0x936b9a770d42a6ba21ea9e9cb31d04940ff470f037aa0455ee49456393f8981f",
-  tokenId: "123000456",
+//  hash: "0xa9686fc66c71482d9821c8c41011847a223819700897d6e31e5f8c6e50d2c61c",
+  tokenId: "",
 };
 
-
 function hashDecode() {
-  //  let seed = parseInt(tokenData.hash.slice(0, 16), 16);
-
-  //hash to array//
   let p = [];
   for (let i = 0; i < 64; i += 2) {
     p.push(tokenData.hash.slice(i + 2, i + 4));
   }
-  let rns = p.map((x) => {
+  let P = p.map((x) => {
     return (parseInt(x, 16) % 10) + 1;
   });
-  //  rns = rns.map((x) => x + 1);
   console.log(tokenData.hash);
-  console.log(rns);
-  assign(rns);
+  console.log(P);
+  assign(P);
 }
 
-function assign(rns) {
-  //DEFINE TYPE// [0], 0 - 2
-  TYPE = rns[31] % 3;
-
-  //testing// //2 ok, 0 ok, 1 ok, 3 witj issues,4
-//  TYPE = 3;
-
-  //set parameters//
+function assign(P) {
+  TYPE = P[30] % 3;
+  //TYPE = 0;
   let prms = [{
       //TYPE 0 hrizantem// 4-7 layers, central translation, thin petals, //!!blackness to be high
-      layers: [11, 13],
-      petals: [6, 10],
-      //        R: "25 * bx", //0.8 for the rest
-      t23RH: [1.5, 1.3, 1.5], ////1.3-1.8 
-      //     t23RHadd: 0.2, //noised, so divided by 2 //?? range of change, not needed?
-      stamen: false, //!!stamens needed or closed center. different stamen type// 0 no, 1 yes short, 2 yes long
+      layers: [6, 7],
+      petals: [6, 7],
       center: true,
-      pointy: 0, //0 false, 1 true for all, 2 random
-      //      width: [-0.3, 0.3],//positive counter, negative clock, +- small, -+ wide
-      Rdif: 0.7,
-      closed: false,
-      LSadd: 0.7 //to test, not programmed
+      pointy: 2, //0 false, 1 true for all, 2 random
+      closed: true,
+      LSadd: 0.8
     },
     {
       //TYPE 1 open flower// high p3, all petal width is the same petals if inside R is big
       layers: [3, 4],
       petals: [5, 7],
-      //        R: "25 * bx", //0.8 for the rest
-      t23RH: [1.3, 1.5, 1.5], // 1-1.5
-      //     t23RHadd: 0.6,
-      stamen: true, //0 if small R//can be longer
-      center: "",
+      t23R: [1, 1.3, 1.4, 1.7],
+      stamen: true,
       pointy: 2,
-      //      width: [-0.3, -0.3],
-      Rdif: 0.7
     },
     {
       //TYPE 2 pointy petals, many layers, small difference, inside swirl, big LSadd around 1.5-2//!!still problem with overlap!!
-      layers: [8, 10], //3
-      petals: [8, 12], //10
-      //        R: "25 * bx", //0.8 for the rest
-      t23RH: [1, 1.5, 1.5], //[1.5, 1.3, 1.3, 1.3], any radius from 1 to 1.5
-      //      t23RHadd: 0,
-      stamen: false, //0 if small R
-      center: "",
-      //      width: [-0.2, 0.2],
+      layers: [8, 9],
+      petals: [8, 12],
       pointy: 1,
-      Rdif: 0.75
+      closed: true,
     },
     {
       //TYPE 3 mixed petal relations, 2-3 layers, big difference in Res and big home //!! ok, but problem with last petal overlap//!! problem with stamens with 3 layers - too short
-      layers: [3, 5], //3
-      petals: [5, 10], //10
-      //        R: "25 * bx", //0.8 for the rest
-      t23RH: [0.7, 1.5, 2], // need shape
-      //      t23RHadd: 2,
-      stamen: true, //0 if small R
-      center: "",
-      //      width: [-0.2, 0.2],
-      pointy: 0,
-      Rdif: 0.7,
-      LS: [1, -10]
+      layers: [3, 6],
+      petals: [5, 10],
+      t23R: [0.6, 0.8, 1.2, 1.5],
+      stamen: true,
     },
     {
       //TYPE 4 moonflower, big radius, big translation, big transparency,//!!all layers cant be pointy//problem with stamens
-      layers: [4, 6], //3-5
-      petals: [5, 7], //5-15
-      //        R: "25 * bx", //0.8 for the rest
-      t23RH: [2, 2.5, 4], // need shape
-      //      t23RHadd: 2,
-      stamen: true, //0 if small R
-      center: "",
-      //      width: [-0.2, 0.2],
-      pointy: 0,
-      Rdif: 0.7,
-//      closed: true,
-      //add.sett.
+      layers: [4, 6],
+      petals: [5, 7],
+      t23R: [1.9, 2.2, 2.7, 2.8],
+      stamen: true,
+      LSadd: 4,
+      closed:true,
     },
   ];
 
   //GENERAL SETUP//
-  //9,10// HSB color hue
-  hu = map(rns[9] * rns[10] * rns[11], 30, 150, 0, 360);
+  hu = map(P[9] * P[10] * P[11], 30, 150, 0, 360);
+  noiseSeed(P[11] * P[12]);
+  maxstamen = prms[TYPE].stamen ? P[12] * 3 + 10 : 0;
 
-  //11,12// noiseseed
-  noiseSeed(rns[11] * rns[12]);
-
-  //12// maxstamen
-  maxstamen = prms[TYPE].stamen ? rns[12] * 3 + 10 : 0; // no stamen if [0] < 1
   center = prms[TYPE].center;
-  //  maxstamen = 50;
-
-  //12,13// 2 coordinates 20 to 80% translation
-  translation = prms[TYPE].center ? [40 + rns[12] * 2, 50 + rns[13]] : [25 + rns[12] * 5, 25 + rns[13] * 5];
-  if (TYPE == 4) translation = [50, 140];
-  //  translation = [80,45]
-
-  //14// gradient intensity
-  LSadd = TYPE == 4 ? 4 : map(rns[14], 1, 10, 0.9, 1.5);
-  //    LSadd = 1
-
-  //15,16// petal width
-  // wr = map(rns[15], 1, 10, prms[TYPE].width[0], prms[TYPE].width[1]);
-  // wl = map(rns[16], 1, 10, prms[TYPE].width[0], prms[TYPE].width[1]);
-  wr = map(rns[15], 1, 10, -0.2, 0.2);
-  wl = map(rns[16], 1, 10, -0.2, 0.2);
-  // wr = -0.3;
-  // wl = 0.3;
-
-  //layers// [0], max 5
-  let y = floor(map(rns[0], 1, 10, prms[TYPE].layers[0], prms[TYPE].layers[1]));
-  layers = Array.from({
-    length: y
-  }, () => ({}));
-  let i = layers.length - 1;
-  LL = layers[i];
-
-  //petals// [0-6]
+  translation = prms[TYPE].center ? [40 + P[12] * 2, 50 + P[13]] 
+    : TYPE == 4 ? [50, 140] : [25 + P[12] * 5, 25 + P[13] * 5];
+  home = createVector((50 - translation[0]) * bx, (50 - translation[1]) * by);
+  home.lerp(0, 0, 0, 0.5);
+  LSadd = prms[TYPE].LSadd ? prms[TYPE].LSadd : map(P[14], 1, 10, 0.9, 1.5);
+  wr = map(P[15], 1, 10, -0.1, 0.2);
+  sw = map (P[17], 1, 10, 0.2, 0.8);
+  //layers//
+  let y = floor(map(P[0], 1, 10, prms[TYPE].layers[0], prms[TYPE].layers[1]));
+  layers = Array.from({length: y}, () => ({}));
+  LL = layers[y-1];
+  //petals//
   for (i = 0; i < y; i++) {
-    layers[i].petals = floor(
-      map(rns[i], 1, 10, prms[TYPE].petals[0], prms[TYPE].petals[1])
-    ); //[i]
-    layers[i].R =
-      i == 0 ?
-      floor(rns[i] * 2 + 24 * bx) :
-      floor(layers[i - 1].R * prms[TYPE].Rdif);
-
-    //randomized//
-    layers[i].t2R = map(rns[11], 1, 10, 1, 1.5) * layers[i].R; //random 23RH, 1.1-2
-    layers[i].t3R = map(rns[12], 1, 10, 1.2, 1.5) * layers[i].R; //1.1-2
-    layers[i].thome = map(rns[13], 1, 10, 1.5, 2); //1.1-2
-    if (TYPE == 3) {
-      layers[i].t2R = map(rns[11], 1, 10, 0.6, 0.8) * layers[i].R;
-      layers[i].t3R = map(rns[12], 1, 10, 1.2, 1.5) * layers[i].R;
-    }
-    if (TYPE == 4) {
-      layers[i].t2R = map(rns[11], 1, 10, 2, 2.2) * layers[i].R;
-      layers[i].t3R = map(rns[12], 1, 10, 2.6, 2.8) * layers[i].R;
-      layers[i].thome = 4;
-    }
-    // //set//
-    // layers[i].t2R = prms[TYPE].t23RH[0] * layers[i].R + 0 //nz() * prms[TYPE].t23RHadd;
-    // layers[i].t3R = prms[TYPE].t23RH[1] * layers[i].R + 0 //nz() * prms[TYPE].t23RHadd;
-    // layers[i].thome = prms[TYPE].t23RH[2]; //nz() * prms[TYPE].t23RHadd;
-
-    if (prms[TYPE].pointy == 2 && rns[i + 1] > 7) layers[i].pointy = true;
-    if (prms[TYPE].pointy == 1) layers[i].pointy = true;
-    if ([i] > 5) layers[i].pointy = true;
+    layers[i].petals = floor(map(P[i], 1, 10, prms[TYPE].petals[0], prms[TYPE].petals[1]));
+    layers[i].R = i == 0 ? floor(P[i] * 2 + 22 * bx) : floor(layers[i-1].R * 0.7);
+    layers[i].t2R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[0], prms[TYPE].t23R[1]) * layers[i].R : map(P[11], 1, 10, 1, 1.5) * layers[i].R; 
+    layers[i].t3R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[2], prms[TYPE].t23R[3]) * layers[i].R : map(P[12], 1, 10, 1.2, 1.5) * layers[i].R; 
+    let h = home.copy();
+    layers[i].thome = TYPE == 4 ? h.mult(4) : h.mult(1+4/y); 
+    layers[i].pointy = prms[TYPE].pointy == 1 ? true 
+      : prms[TYPE].pointy == null ? false
+      : nz() > 0.6 ? true : false;
+    if (i == y-1) layers[i].closed = prms[TYPE].closed;
   }
+  STadd = TYPE == 4 ? 4 : 1+4/y;
 
-  // ADDITIONAL FEATURES//
-  //11<1// closed center - //!!problem drawing
-  if (TYPE == 2 || prms[TYPE].closed == true) {
-    LL.t3R /= 2;
-    LL.t2R /= 2;
-    //    LL.thome /=2;
-    LL.closed = true;
-    //    maxstamen = 0;
-    console.log("closed center");
-  }
-  if (TYPE == 4) {
-    LL.t3R /= 3;
-    LL.closed = true;
-  }
-
-  //int radius for stamens// 
-
-  //IR = (layers[LL].R);
-
-
-  //console//
   console.log("TYPE " + TYPE);
   console.log("prms");
   console.log(prms);
@@ -211,83 +110,25 @@ function assign(rns) {
   console.log("maxstamen " + maxstamen);
   console.log("translation " + translation);
   console.log("LSadd " + LSadd);
-  console.log("petalwidth wr" + wr + "; wl" + wl);
+  console.log("petalwidth wr" + wr);
+  console.log("swirl ", +sw)
   console.log(layers);
-  // console.log("IR " + IR);
+  console.log("LL")
+  console.log(LL)
+  console.log("stadd "+STadd)
 }
 
-function nz() {
+function nz(x) {
   NZ++;
-  return noise(NZ);
+  if (x) {return noise(NZ)-0.5}
+  else {return noise(NZ)};
 }
 
-// //5// layers swirling 0.3 .. -0.3;
-// s = map(rns[5], 1, 10, -0.05 * bx, 0.05 * bx);
-// console.log("s " + s);
-
 /*
-  //0// number of layers (min 2, max 5)
-  x = (rns[0] % 3) + 2;
-  layers = Array.from({ length: x }, () => ({
-    petals: "",
-    R: "",
-    rotation: "",
-    t2R: "",
-    t3R: "",
-    t2home: "",
-    t3home: "",
-  }));
-  //1...3*layers// layers specs (petals 3-12 R whole numbers 30-500). Sort by biggest R
-  for (i = 0; i < x; i++) {
-    layers[i].petals = rns[1 + 6 * i] + 2;
-    layers[i].R = floor((rns[2 + 8 * i] + 20) * bx);
-    layers[i].rotation = rns[3 + 6 * i];
-    layers[i].t2R = map(rns[5 + 5 * i], 1, 10, 1, 2);
-    layers[i].t3R = map(rns[6 + 5 * i], 1, 10, 1, 3);
-    layers[i].t2home = map(rns[7 + 5 * i], 1, 10, 1, 2);
-    layers[i].t3home = map(rns[8 + 5 * i], 1, 10, 1, 3);
-  }
-  layers.sort((a, b) => b.R - a.R);
-
-
-*/
-
-/*
-rules:
-small R limitations
-small petals on outside layers - with big R
-t3r on lower levels means smaller Res on higher levels
-t3 of inside layers must not be lower than t3 of outside. difference must be significant.
-small R layers may get too thin and be black
-? high home distance for bigger t3 Res
-!! on wider Res stamens must have more visibility
-t2home < t3home on small Res
-to limit min Res
-
-
 TYPE 5 rose, overlap -0.3,0.3, more petals, closed,more transparency, swirl
-TYPE 6 long thin pointy
-
-pointed petals - p3 one point
-quality relative to bx/by?
-
-wr  -   wl
--0.2    -0.2  swirl
-0.2     0.2   swirl
--0.2    0.2   overlap
-0.2     -0.2  too thin, careful
-
-same offset start for different swirls:
-100% offset = wl > -wr ? wl + mid : wr + mid //ranges 0.7-0.3
-100% offset / angle-mid = current offset // ranges 1-0
-
-
+Q for stamens?
 swirling;
-gradient type
-lower layer number require less blackness
-no rwo spikey layers in a row
-
-/////////
 1005 problem with type 4 stamens, type 2-3 overlap
-
+22.6kb
+13.7
 */
