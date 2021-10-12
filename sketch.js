@@ -1,4 +1,4 @@
-let Q = 2;
+let Q = 1;
 let stamnum = 0;
 let particles = [];
 let bx;
@@ -9,6 +9,7 @@ let stamens = [];
 let startframe = 0;
 let flID = 0;
 let NZ = 0;
+let NZR = 0;
 //let closed;//!?
 //let center = false;//!?
 //let wr = 0; 
@@ -28,18 +29,22 @@ function setup() {
   by = height / 100;
   randomHash();
   hashDecode();
-  background(hu, 100, 4);
+  background(hu % 360, 100, 4);
+  console.log(bx)
 }
 
 function draw() {
-  if (LSadd != 4) drawbg(200 * Q);
-  glare();
+//  if (LSadd != 4) drawbg(200 * Q);
   push();
   translate(translation[0] * bx, translation[1] * by);
   if (layers[flID] != null) drawflower(layers[flID]);
+  glare();
   if (layers[flID] == null && st == null) 
   st = drawstamen();
   pop();
 
   if (layers[flID] == null && st != null) signature(st);
+  // console.log("FC "+frameCount)
+  // console.log(NZ)
+
 }

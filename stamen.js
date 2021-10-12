@@ -1,6 +1,6 @@
 function drawstamen() {
   if (stamens.length == 0 && maxstamen > 0) {
-    stamens = Array(4)
+    stamens = Array(15)
       .fill()
       .map((p) => new Stamen());
   }
@@ -20,12 +20,9 @@ function drawstamen() {
     } else {
       stamen.color = color(stamen.hu + stamen.LS, 100, 50, stamen.LS);
       stamen.velocity.add(stamen.acceleration);
-      stamen.velocity.setMag(LL.R / 90 * STadd);
-      if (TYPE == 4) {
-        stamen.velocity.mult(10.5), stamen.LS += 0.002
-      }
+      stamen.velocity.setMag(layers.length > 4 ? LL.R/50 : LL.R / 90);
       stamen.pos.add(stamen.velocity);
-      stamen.LS += 0.005;
+      stamen.LS += 0.002;
       stroke(stamen.color);
       strokeWeight(by / 5);
       line(
@@ -44,26 +41,17 @@ function drawstamen() {
 class Stamen {
   constructor() {
     this.pos = createVector(home.x - nz(1) * LL.R / 2, home.y - nz(1) * LL.R / 2);
-    this.acceleration = createVector(0, 0.002 * bx);
+    this.acceleration = createVector(0, 0.001 * bx);
     this.velocity = p5.Vector.sub(this.pos, home);
     this.velocity.setMag(bx);
     let h = home.copy();
-    h.setMag(bx);
+    h.setMag(bx*2);
     this.velocity.add(h);
     this.LS = -0.01;
-    this.hu = ((hu + 160) % 360) + nz() * 60;
+    this.hu = hu + nz() * 160;
     this.color = color(this.hu, 100, 50, 1);
-    this.offset = (frameCount + floor(map(nz(), 0.3, 1, 40, 99))) % 100; 
+    this.offset = (frameCount + floor(map(nz(), 0.1, 1, 10, 99))) % 100; 
     if (this.offset == 0) this.offset = 50;
-    if (TYPE == 4) { //position inside of p3???
-      let vec = home.copy();
-      vec.y *= 0.5;
-      this.pos = createVector(nz(1) * LL.R * 2 + vec.x, nz(1) * LL.R + vec.y);
-      this.LS = -0.2
-      this.velocity = this.pos.copy();
-      this.velocity.mult(0.5)
-      this.acceleration.mult(40);
-    }
     this.prevpos = this.pos.copy();
   }
 }
