@@ -1,9 +1,9 @@
-let a = [-65, -47, -101, 25, -68, -140, -65, -30];
-let n = [-60, -54, -65, 12, -55, -103, -50, -30];
-let n1 = [-47, -55, -52, 20, -40, -113, -33, -30];
-let prevposx = a[0];
-let prevposy = a[1];
-let ltr = a;  
+let a = [-10, -8, -16, 4, -11, -23, -11, -5];
+let n = [-10, -9, -11, 2, -9, -16, -8, -5];
+let n1 = [-8, -9, -9, 3, -6, -18, -6, -5];
+let prevposx ;
+let prevposy ;
+let ltr = a;
 
 function signature(start) {
   push();
@@ -22,7 +22,7 @@ function signature(start) {
 }
 
 function letter(a, start) {
-  let t = ((frameCount-start) % 30) / 29;
+  let t = ((frameCount - start) % 30) / 29;
   thisposx =
     (1 - t) ** 3 * a[0] +
     3 * (1 - t) ** 2 * t * a[2] +
@@ -33,4 +33,6 @@ function letter(a, start) {
     3 * (1 - t) ** 2 * t * a[3] +
     3 * (1 - t) * t ** 2 * a[5] +
     t ** 3 * a[7];
+  if (prevposx == null) {prevposx = thisposx;
+    prevposy = thisposy;}
 }
