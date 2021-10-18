@@ -4,26 +4,26 @@ function drawstamen() {
       .fill()
       .map((p) => new Stamen());
   }
-  for (let s of particles) {
-    if (frameCount % 100 == s.offset) {
-      stroke(s.color);
+  for (let p of particles) {
+    if (frameCount % 100 == p.offset) {
+      stroke(p.color);
       strokeWeight(by / 12);
       for (let i = 0; i < LLR / 2; i++)
-        line(s.pos.x, s.pos.y, s.pos.x + nz(1) * LLR / 7, s.pos.y + nz(1) * LLR / 7)
+        line(p.pos.x, p.pos.y, p.pos.x + nz(1) * LLR / 7, p.pos.y + nz(1) * LLR / 7)
       if (stamnum < maxstamen) {
         particles.push(new Stamen());
         stamnum++;
       }
     } else {
-      s.color.setAlpha(s.LS);
-      s.vel.add(s.acc);
-      s.vel.setMag(layers.length > 4 ? LLR / 50 : LLR / 90);
-      s.pos.add(s.vel);
-      s.LS += 0.002;
-      stroke(s.color);
+      p.color.setAlpha(p.LS);
+      p.vel.add(p.acc);
+      p.vel.setMag(layers.length > 4 ? LLR / 50 : LLR / 90);
+      p.pos.add(p.vel);
+      p.LS += 0.002;
+      stroke(p.color);
       strokeWeight(by / 5);
-      line(s.prevpos.x, s.prevpos.y, s.pos.x, s.pos.y);
-      s.prevpos = s.pos.copy();
+      line(p.prevpos.x, p.prevpos.y, p.pos.x, p.pos.y);
+      p.prevpos = p.pos.copy();
     }
   }
   particles = particles.filter((p) => frameCount % 100 != p.offset);
@@ -45,8 +45,7 @@ class Stamen {
     this.LS = -0.01;
     this.hu = hu + nz() * 160;
     this.color = color(this.hu, 100, 50);
-    this.offset = (frameCount + floor(map(nz(), 0.1, 1, 10, 99))) % 100;
-    if (this.offset < 10) this.offset = 50;
+    this.offset = (frameCount + floor(map(nz(), 0.1, 0.9, 10, 99, true))) % 100;
     this.prevpos = this.pos.copy();
   }
 }
