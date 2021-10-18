@@ -9,7 +9,7 @@ function randomHash() {
 
 tokenData = {
   hash: randomHash(),
-//  hash: "0xc0779a6ff977f67864830d1e52bce9ee7960b842719f18b991eedeb907c97446",
+    hash: "0x3bf120b4e61cebc1a400bb81e6d38c682426388a35efce3a067685facb824144",
   tokenId: "",
 };
 
@@ -28,7 +28,7 @@ function hashDecode() {
 
 function assign(P) {
   TYPE = P[30] % 5;
-  //  TYPE = 4;
+  //    TYPE = 4;
   let prms = [{
       layers: [6, 7],
       petals: [6, 7],
@@ -71,11 +71,12 @@ function assign(P) {
   home.lerp(0, 0, 0, 0.5);
   wr = map(P[15], 1, 10, 0, -0.2);
   sw = map(P[17], 1, 10, 0.3, 0.7);
-  let y = floor(map(P[0], 1, 10, prms[TYPE].layers[0], prms[TYPE].layers[1]));
+  feature = P[20]
+  let y = (home.mag() > bx * 10 && TYPE == 3) ? prms[TYPE].layers[0] : floor(map(P[0], 1, 10, prms[TYPE].layers[0], prms[TYPE].layers[1])); //chck
   layers = Array.from({length: y}, () => ({}));
   for (i = 0; i < y; i++) {
     layers[i].petals = floor(map(P[i], 1, 10, prms[TYPE].petals[0], prms[TYPE].petals[1]));
-    layers[i].R = i == 0 ? P[i] * 2 + 21 * bx : layers[i - 1].R * 0.7; 
+    layers[i].R = i == 0 ? P[i] * 2 + 21 * bx : layers[i - 1].R * 0.7;
     layers[i].t2R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[0], prms[TYPE].t23R[1]) * layers[i].R : map(P[11], 1, 10, 1, 1.5) * layers[i].R;
     layers[i].t3R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[2], prms[TYPE].t23R[3]) * layers[i].R : map(P[12], 1, 10, 1.2, 1.6) * layers[i].R;
     let h = home.copy();
@@ -87,13 +88,13 @@ function assign(P) {
   }
   LLR = layers[y - 1].R;
   console.log("TYPE " + TYPE);
-  console.log("prms");
   console.log(prms);
   console.log("hue " + hu);
   console.log("maxstamen " + maxstamen);
   console.log("translation " + translation);
   console.log("petalwidth wr" + wr);
-  console.log("swirl ", +sw)
+  console.log("swirl ", +sw);
+  console.log("feature ", +feature)
   console.log(layers);
 }
 
@@ -110,3 +111,10 @@ function nzr() {
   NZR += 1;
   return noise(NZR)
 }
+/*
+feature
+% 2 2 layer
+% 3 glare
+% 4 lsadd
+% 5 bg
+*/

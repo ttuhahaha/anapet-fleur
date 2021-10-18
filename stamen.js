@@ -8,8 +8,8 @@ function drawstamen() {
     if (frameCount % 100 == s.offset) {
       stroke(s.color);
       strokeWeight(by / 12);
-      for (let i = 0; i < LLR / 2; i++) 
-        line(s.pos.x, s.pos.y, s.pos.x + nz(1) * LLR / 7, s.pos.y + nz(1) * LLR / 7)     
+      for (let i = 0; i < LLR / 2; i++)
+        line(s.pos.x, s.pos.y, s.pos.x + nz(1) * LLR / 7, s.pos.y + nz(1) * LLR / 7)
       if (stamnum < maxstamen) {
         particles.push(new Stamen());
         stamnum++;
@@ -46,7 +46,7 @@ class Stamen {
     this.hu = hu + nz() * 160;
     this.color = color(this.hu, 100, 50);
     this.offset = (frameCount + floor(map(nz(), 0.1, 1, 10, 99))) % 100;
-    if (this.offset == 0) this.offset = 50;
+    if (this.offset < 10) this.offset = 50;
     this.prevpos = this.pos.copy();
   }
 }
