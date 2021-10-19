@@ -1,4 +1,4 @@
-let Q = 2;
+let Q = 1;
 let stamnum = 0;
 let particles = [];
 let bx;
