@@ -1,6 +1,6 @@
 function drawstamen() {
   if (particles.length == 0 && maxstamen > 0) {
-    particles = Array(15)
+    particles = Array(7)
       .fill()
       .map((p) => new Stamen());
   }

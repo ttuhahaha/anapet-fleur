@@ -18,7 +18,6 @@ class Particle {
     this.Q = floor(home.dist(petalcenter) * Q / 4);
     if (this.Q < 50 * Q) this.Q += 50 * Q;
     this.LSstep = (50 - this.LS) / (this.Q);
-    if (feature % 3 == 0) this.LSstep *=1.5
     this.T1 = p5.Vector.fromAngle(angle, layer.R);
     this.T1.add(home);
     if (layer.pointy || (layer.closed && TYPE != 4)) {
@@ -30,17 +29,15 @@ class Particle {
     if (TYPE == 4) {
       this.startpoint = floor((0.60 + flID / 40) * this.Q);
       this.LSstep *= 2;
-    } else {
-      if (home.mag() > bx * 5) {
-        if (TYPE == 2) this.startpoint = floor(flID / 15 * this.Q);
-        this.LSstep *= 1 + flID * 0.2;
-      }
     }
-
+    if (home.mag() > bx * 5 && TYPE == 2) {
+      this.startpoint = floor(flID / 15 * this.Q);
+      this.LSstep *= 1 + flID * 0.2;
+    }
   }
 
   updatepetal(layer) {
-    this.color = color((this.hu + this.LS) % 360, 100, max(this.LS, 4));
+    this.color = color((this.hu + this.LS * (feature % 4)) % 360, 100, max(this.LS, 4));
     this.LS += this.LSstep;
     if (TYPE == 4) strokeWeight(max(0, this.LS * bx / 150));
     if (((frameCount - startframe + this.startpoint) % this.Q) == 0) this.end(layer);
@@ -65,29 +62,27 @@ class Particle {
     stroke(this.color);
     if (particles.length > 0) {
       if ((home.mag() > 10 * bx || layer.closed) && flID > 1) strokeWeight(max(0, this.LS * bx / 480));
-      if (feature % 5 > 3 && TYPE != 4) 
-      strokeWeight(max(0, this.LS / bx / 80))
+      if (feature % 2 < 1 && TYPE != 4 && TYPE != 0) strokeWeight(max(0, this.LS / bx / 80))
       line(this.prevpos.x, this.prevpos.y, this.pos.x, this.pos.y);
-      
-      if (flID < 4 && petalcount % 2 < 1 && !layer.closed && feature % 4 > 0) {
+      if (flID < 4 && noise(petalcount) < 0.7 && !layer.closed && feature % 4 > 0) {
         push();
-        strokeWeight(max(0, this.LS / bx / 40));
-        this.color = color(this.hu + this.LS / 2, 99, 20);
-        stroke(this.color);
+        strokeWeight(max(0, this.LS*(flID+1) / bx / 120));
+//        this.color = color(this.hu + this.LS / 2, 99, 20);
+//        stroke(this.color);
         let x = TYPE == 4 ? flID / 2 + 1.3 : flID * 1.5 + 1.5;
-        let y = TYPE == 4 ? (x - 1) * 2 : (x - 1) * 1.5
+        let y = TYPE == 4 ? (x - 1) * 4 : (x - 1) * 1.5
         line(this.prevpos.x * x - y * home.x, this.prevpos.y * x - y * home.y, this.pos.x * x - y * home.x, this.pos.y * x - y * home.y);
         pop()
       }
 
-      if (flID < 4 && particles.indexOf(this) < 2 && (petalcount + flID) % 5 < 3 && nzr() > 0.65 && this.LS > 5 && feature % 3 > 0) {
+      if (flID < 4 && particles.indexOf(this) < 2 && noise(petalcount+flID) > 0.5 && nzr() > 0.65 && this.LS > 5 && feature % 3 > 0) {
         push();
         for (i = 20; i > 1; i--) {
-          strokeWeight(layer.pointy ? nzr() * (this.LS / 8 - i) * bx : nzr() * (this.LS / 6 - i) * bx);
+          strokeWeight(layer.pointy ? nzr() * (this.LS /8 - i) * bx : nzr() * (this.LS / 6 - i) * bx);
           stroke((hu + 100) % 360, 99, 50 + i * 4, 0.001 + i / 120);
           point(
-            this.pos.x * 1.2,
-            TYPE == 4 ? this.pos.y * 1.5 : this.pos.y * (flID + 1)-home.y*flID);
+            this.pos.x * 1.5,
+            TYPE == 4 ? this.pos.y * 1.5-home.y*2 : this.pos.y * (flID + 1)-home.y*flID);
         }
         pop();
       }
@@ -115,7 +110,8 @@ function newpetal(layer) {
     particles.push(new Particle(a, mid, layer));
   }
   particles.forEach(x => {
-    if (nzr() > 0.73) x.LSstep *= 1.1
+    if (nzr() > 0.73) x.LSstep *= 1.1;
+    if (particles.indexOf(x) == 3) x.LSstep *=1.8// for type 2 only?
   });
   //  particles.forEach(x => {if (noise(this.hu) > 0.7) x.LSstep *= 1.1});
 }

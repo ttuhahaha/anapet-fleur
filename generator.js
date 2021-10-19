@@ -9,7 +9,7 @@ function randomHash() {
 
 tokenData = {
   hash: randomHash(),
-    hash: "0x3bf120b4e61cebc1a400bb81e6d38c682426388a35efce3a067685facb824144",
+//  hash: "0xffa64177e355dbda4e3db296b7fb65bc26455a0121c964d573947d3a85e2efe7",
   tokenId: "",
 };
 
@@ -28,7 +28,7 @@ function hashDecode() {
 
 function assign(P) {
   TYPE = P[30] % 5;
-  //    TYPE = 4;
+//    TYPE = 4;
   let prms = [{
       layers: [6, 7],
       petals: [6, 7],
@@ -57,18 +57,19 @@ function assign(P) {
     {
       layers: [4, 5],
       petals: [5, 7],
-      t23R: [1.9, 2.2, 2.7, 2.8],
+      t23R: [1.6, 2, 2.5, 2.7],
       closed: true
     }
   ];
 
   hu = (map(P[9] * P[10] * P[11], 3, 150, 0, 360)) % 360;
   noiseSeed(P.reduce((a, b) => a * b));
-  maxstamen = prms[TYPE].stamen ? P[12] * 3 + 70 : 0;
+  maxstamen = prms[TYPE].stamen ? P[12] * 10 : 0;
   translation = TYPE == 0 ? [40 + P[12] * 2, 50 + P[13]] :
-    TYPE == 4 ? [50, 140] : [25 + P[12] * 5, 25 + P[13] * 5];
+    TYPE == 4 ? [50, 140] : [P[12] * 10, P[13] * 10];
+  //  [25 + P[12] * 5, 25 + P[13] * 5];
   home = createVector((50 - translation[0]) * bx, (50 - translation[1]) * by);
-  home.lerp(0, 0, 0, 0.5);
+  home.lerp(0, 0, 0, 0.75);
   wr = map(P[15], 1, 10, 0, -0.2);
   sw = map(P[17], 1, 10, 0.3, 0.7);
   feature = P[20]
@@ -76,11 +77,11 @@ function assign(P) {
   layers = Array.from({length: y}, () => ({}));
   for (i = 0; i < y; i++) {
     layers[i].petals = floor(map(P[i], 1, 10, prms[TYPE].petals[0], prms[TYPE].petals[1]));
-    layers[i].R = i == 0 ? P[i] * 2 + 21 * bx : layers[i - 1].R * 0.7;
+    layers[i].R = i == 0 ? P[i] * 2 + 26 * bx : layers[i - 1].R * 0.7;
     layers[i].t2R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[0], prms[TYPE].t23R[1]) * layers[i].R : map(P[11], 1, 10, 1, 1.5) * layers[i].R;
     layers[i].t3R = prms[TYPE].t23R ? map(P[11], 1, 10, prms[TYPE].t23R[2], prms[TYPE].t23R[3]) * layers[i].R : map(P[12], 1, 10, 1.2, 1.6) * layers[i].R;
     let h = home.copy();
-    layers[i].thome = TYPE == 4 ? h.mult(4) : h.mult(1 + 3 / y);
+    layers[i].thome = TYPE == 4 ? h.mult(8) : h.mult(1 + 3 / y);
     layers[i].pointy = prms[TYPE].pointy == 1 ? true :
       prms[TYPE].pointy == null ? false :
       nz() > 0.6 ? true : false;
@@ -113,8 +114,10 @@ function nzr() {
 }
 /*
 feature
-% 2 2 layer
-% 3 glare
-% 4 lsadd
-% 5 bg
+% 4 > 0 : 2 layer
+% 3 > 0 : glare
+% 2 < 1 : transparency
+% 5 : gradient //0,1,2,3,4
+
+feature transparency with type 2
 */
