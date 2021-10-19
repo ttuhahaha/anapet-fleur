@@ -37,7 +37,6 @@ function setup() {
 }
 
 function draw() {
-if (feature % 5 > 0)  drawbg(2000 * Q);
 push();
   translate(translation[0] * bx, translation[1] * by);
   if (layers[flID] != null) drawflower(layers[flID]);
