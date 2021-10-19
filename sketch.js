@@ -22,7 +22,7 @@ let feature;
 function setup() {
   pixelDensity(2)
   colorMode(HSL);
-  createCanvas(windowHeight * 1.5, windowHeight);
+  createCanvas(min(windowHeight * 1.5, windowWidth * 1.5), min(windowHeight, windowWidth));
   noFill();
   strokeWeight(bx / 8);
   bx = width / 100;
