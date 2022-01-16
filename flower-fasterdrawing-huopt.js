@@ -61,19 +61,23 @@ class Petal {
 
     drawpetalrandom() { //need to turn off redefine in seclayer
         if (frameCount / 20 > this.flID) {
-        if (frameCount % 20 == 0) {let check = this.particles[floor(random(this.particles.length))];
-        if (check.redef < 2) check.redefine()}
-        for (let p of this.particles) {
-            if (p.t < 1) { // && this.particles.indexOf(p) % 50 == 0){// && this.particles.indexOf(p) % 2 == frameCount % 2) {
-                p.update();
-                if (!p.outside() && p.t > p.t0) {
-                    p.draw()
-                }
-                p.prevpos = p.pos.copy();
+            if (frameCount % 5 == 0) {
+                let check = this.particles[floor(random(this.particles.length))];
+                //if (check.redef < 2) 
+                check.redefine()
             }
-        }}
+            for (let p of this.particles) {
+                if (p.t < 1) { // && this.particles.indexOf(p) % 50 == 0){// && this.particles.indexOf(p) % 2 == frameCount % 2) {
+                    p.update();
+                    if (!p.outside() && p.t > p.t0) {
+                        p.draw()
+                    }
+                    p.prevpos = p.pos.copy();
+                }
+            }
+        }
         this.particles.filter(x => !x.dead())
-    } 
+    }
 
     checkangle() {
         //        if (abs(degrees(this.angle) % 360) < (frameCount % 450) && abs(degrees(this.angle) % 360) > ((frameCount - 1) % 450)) this.particles.forEach(x => x.redefineoutside(1));
@@ -83,7 +87,7 @@ class Petal {
     seclayer() {
         if (this.flID < 3) {
             for (let p of this.particles) {
-             //   if (random()>0.6) 
+                //   if (random()>0.6) 
                 while (p.t < 1) {
                     p.update();
                     p.drawseclayer();
@@ -104,11 +108,8 @@ class Particle {
             map(abs(angle - parent.mid), 0, 1, -50, 0);
         let thishu = (noise(angle) - 0.5) * 100 + hu + parent.flID * 10;
         LS *= noise(thishu);
-        this.sw1 = bx / 50;
-        this.sparklecolor0 = color(thishu, 100, 4);
-        this.sparklecolor1 = color((thishu + 40 * (feature % 4)) % 360, 100, 100);
         let PQ = floor((bx * 2 - parent.flID) * 3);
-        this.speed = (noise(thishu) / 2 + 0.5) / PQ/2;
+        this.speed = (noise(thishu) / 2 + 0.5) *2 / PQ;
         if (TYPE == 4) {
             this.t = this.t0 = (0.6 + parent.flID / 40);
             this.speed *= 0.4;
@@ -121,26 +122,23 @@ class Particle {
         this.T2 = p5.Vector.fromAngle(angle, layer.t2R);
         this.T2.add(layer.thome);
         this.sparkle = random() > 0.6;
-        if (random() > 0.9) {
-            this.speed *= 1.3;
-            this.sparkle = true;
-        }
+        // if (random() > 0.9) {
+        //     this.speed *= 1.3;
+        //     this.sparkle = true;
+        // }
         this.halo = random() > 0.8;
         this.color0 = [thishu + LS, 100, LS * 0.5];
         this.color1 = [thishu + 40 * (feature % 4), 100, 80];
-        this.redef = 0;
-        if (parent.flID > 2){
-        this.redef = 1;
-        this.t = 1.1}
+//        this.redef = 0;
+        if (parent.flID > 2) {
+//            this.redef = 1;
+            this.t = 1.1
+        }
     }
 
     update() {
-        //        this.LS += this.LSstep;
         this.pos = this.updatepos(this.t);
         this.t += this.speed;
-        // if (this.t > 0.95 && feature % 3 < 1 && !this.sparkle) {
-        //     petals[this.parent].particles.forEach(p => p.t = 1.1); //glitch
-        // }
     }
 
     outside() {
@@ -156,15 +154,14 @@ class Particle {
     }
 
     sw(sparkle) {
-        return map(this.t, this.t0, 1, 0, sparkle ? bx / 6 : this.sw1)
+        return map(this.t, this.t0, 1, 0, sparkle ? bx / 6 : bx / 50)
     }
 
     color(sparkle, a) {
-        let h = map(this.t, this.t0, 1, this.color0[0], this.color1[0])
-        let s = map(this.t, this.t0, 1, this.color0[1], this.color1[1])
-        let l = map(this.t, this.t0, 1, this.color0[2], this.color1[2])
-        if (sparkle) l *= 4;
-        return color(h % 360, s, l, a ? a : 1);
+        let h = map(this.t, this.t0, 1, this.color0[0], this.color1[0]);
+        let s = map(this.t, this.t0, 1, this.color0[1], this.color1[1]);
+        let l = map(this.t, this.t0, 1, this.color0[2], this.color1[2]);
+        return color(h % 360, s, sparkle? l * 4 : l, a ? a : 1);
     }
 
     line(canvas) {
@@ -173,14 +170,14 @@ class Particle {
     }
 
     draw() {
-        //if (this.sparkle) g1.blendMode(LIGHTEST);//needed for sparkle layer//
+        //if (this.sparkle)         
+        g1.blendMode(LIGHTEST);//needed for sparkle layer//
         if (this.t0 == 0 || TYPE == 4) {
             g1.stroke(this.color());
             this.line(g1);
         }
         if (this.sparkle) this.drawsparkle();
-                if (this.halo && this.t > 0.4 //&& petals[this.parent].flID < 4
-              ) this.drawhalo();
+        if (this.halo && this.t > 0.4) this.drawhalo();
     }
 
     drawseclayer() {
@@ -217,27 +214,26 @@ class Particle {
             //    this.speed = 2;
             //    this.LSstep *= 2;
             this.sparkle = true;
-            this.halo = random()>0.5;
+            this.halo = random() > 0.5;
             this.t0 = 0.3;
         }
         if (x) this.t0 = 0.3
-        this.redef ++;
+//       this.redef++;
     }
 
     drawhalo() {
         for (i = 5; i > 1; i--) {
-            /// strokeWeight((this.pointy ? nzr() * (this.LS / 8 - i) * bx : nzr() * (this.LS / 6 - i) * bx));
             strokeWeight(nzr() * min((this.t * 5 - i) * bx * 2, bx * 4));
             stroke(this.color(1, 0.05));
             point(
-                TYPE == 4 ? this.pos.x : this.pos.x * (this.t+2),
+                TYPE == 4 ? this.pos.x : this.pos.x * (this.t + 2),
                 TYPE == 4 ? this.pos.y * 1.5 + this.t * bx * 20 : this.pos.y * 2 + 1 - home.y * 2
             );
         }
     }
 
     dead() {
-        return this.t>=1 && this.redef >2;
+        return this.t >= 1 && this.redef > 2;
     }
 }
 
